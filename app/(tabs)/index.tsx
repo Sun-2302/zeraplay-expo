@@ -6,7 +6,6 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { useAudioFiles } from '../utils/useAudioFiles';
 import AudioList from './components/AudioList';
 
-
 const HomeScreen: React.FC = () => {
   const { audioFiles, permissionResponse, requestPermission } = useAudioFiles();
 
@@ -28,8 +27,6 @@ const HomeScreen: React.FC = () => {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Mes audios 🎵</ThemedText>
       </ThemedView>
-
-      {/* Si les permissions sont accordées, afficher la liste */}
       {permissionResponse?.granted ? (
         <AudioList audioFiles={audioFiles} />
       ) : (

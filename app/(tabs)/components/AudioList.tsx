@@ -1,13 +1,34 @@
-import React from 'react';
-import { FlatList, View, StyleSheet } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { FlatList, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { Audio } from 'expo-av';
 
 interface AudioListProps {
   audioFiles: any[];
 }
 
 const AudioList: React.FC<AudioListProps> = ({ audioFiles }) => {
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
+  const toggleAudio = async (uri: string) => {
+    if (isPlaying && sound) {
+      await sound.stopAsync();
+      setIsPlaying(false);
+    } else {
+      if (sound) {
+        await sound.unloadAsync(); 
+      }
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        { uri },
+        { shouldPlay: true }
+      );
+      setSound(newSound);
+      setIsPlaying(true);
+    }
+  };
+
   return (
     <ThemedView style={styles.stepContainer}>
       {audioFiles.length === 0 ? (
@@ -18,9 +39,9 @@ const AudioList: React.FC<AudioListProps> = ({ audioFiles }) => {
           data={audioFiles}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <View style={styles.audioItem}>
+            <TouchableOpacity onPress={() => toggleAudio(item.uri)} style={styles.audioItem}>
               <ThemedText>{item.filename}</ThemedText>
-            </View>
+            </TouchableOpacity>
           )}
         />
       )}
