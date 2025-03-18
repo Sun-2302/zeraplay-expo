@@ -16,6 +16,7 @@ const AudioList: React.FC<AudioListProps> = ({ audioFiles, toggleAudio }) => {
       ) : (
         <FlatList
           nestedScrollEnabled
+          showsVerticalScrollIndicator={false}
           data={audioFiles}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item, index }) => (
@@ -45,7 +46,7 @@ const AudioList: React.FC<AudioListProps> = ({ audioFiles, toggleAudio }) => {
 const styles = StyleSheet.create({
   stepContainer: {
     gap: 8,
-    paddingBottom: 80,
+    marginBottom: 185,
   },
   audioItem: {
     flexDirection: 'row',

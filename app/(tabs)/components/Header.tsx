@@ -19,10 +19,6 @@ const Header: React.FC = () => {
         <Link href="/" style={[styles.title, pathname === '/' && styles.activeLink]}>
           Songs
         </Link>
-        {/* Playlists Link */}
-        <Link href="/playlist" style={[styles.title, pathname === '/playlist' && styles.activeLink]}>
-          Playlists
-        </Link>
       </View>
     </View>
   );
@@ -49,11 +45,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   activeLink: {
-    backgroundColor: '#007BFF', // Couleur de fond pour l'élément actif
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    color: 'white', // Changer la couleur du texte pour qu'il contraste avec le fond
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 19,
   },
 });
 
