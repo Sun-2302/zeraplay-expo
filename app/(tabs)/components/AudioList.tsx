@@ -22,6 +22,12 @@ const AudioList: React.FC<AudioListProps> = ({ audioFiles }) => {
       await sound.unloadAsync();
     }
 
+    await Audio.setAudioModeAsync({
+      staysActiveInBackground: true,
+      shouldDuckAndroid: true,
+      playThroughEarpieceAndroid: false,
+    });
+
     const { sound: newSound } = await Audio.Sound.createAsync(
       { uri },
       { shouldPlay: true, positionMillis: 0 }
@@ -68,7 +74,7 @@ const AudioList: React.FC<AudioListProps> = ({ audioFiles }) => {
               onPress={() => toggleAudio(item.uri, index)}
               style={styles.audioItem}
             >
-              <ThemedText>{item.filename}</ThemedText>
+              <ThemedText>{item.filename} {}</ThemedText>
             </TouchableOpacity>
           )}
         />
