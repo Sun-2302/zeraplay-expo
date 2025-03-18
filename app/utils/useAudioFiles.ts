@@ -1,3 +1,4 @@
+// useAudioFiles.ts
 import { useState, useEffect } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 
@@ -22,10 +23,10 @@ export const useAudioFiles = () => {
 
     const allowedExtensions = ['.mp3', '.m4a'];
 
+    // Filtrage des fichiers audio avec les extensions autorisées
     const filteredAudio = media.assets.filter(asset =>
       allowedExtensions.some(ext => asset.filename.endsWith(ext))
     );
-
 
     setAudioFiles(filteredAudio);
   };

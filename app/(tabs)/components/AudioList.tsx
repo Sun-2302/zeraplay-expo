@@ -1,5 +1,5 @@
 // AudioList.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -54,20 +54,14 @@ const AudioList: React.FC<AudioListProps> = ({ audioFiles }) => {
     }
   };
 
-  const allowedExtensions = ['.mp3', '.m4a'];
-
-  const filteredAudio = audioFiles.filter((asset) =>
-    allowedExtensions.some((ext) => asset.filename.endsWith(ext))
-  );
-
   return (
     <ThemedView style={styles.stepContainer}>
-      {filteredAudio.length === 0 ? (
+      {audioFiles.length === 0 ? (
         <ThemedText>Aucun fichier audio trouvé.</ThemedText>
       ) : (
         <FlatList
           nestedScrollEnabled
-          data={filteredAudio}
+          data={audioFiles}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item, index }) => (
             <TouchableOpacity
@@ -83,7 +77,7 @@ const AudioList: React.FC<AudioListProps> = ({ audioFiles }) => {
       {currentSongIndex !== null && (
         <AudioPlayerFooter
           isPlaying={isPlaying}
-          currentSong={filteredAudio[currentSongIndex].filename}
+          currentSong={audioFiles[currentSongIndex].filename}
           handleStopResume={handleStopResume}
           playNext={playNext}
         />
