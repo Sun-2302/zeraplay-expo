@@ -1,53 +1,99 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { Audio } from 'expo-av';
 import { useAudioFiles } from '../utils/useAudioFiles';
 import AudioList from './components/AudioList';
+import Header from './components/Header';
+import AudioPlayerFooter from './components/AudioPlayerFooter';
+
 
 const HomeScreen: React.FC = () => {
   const { audioFiles, permissionResponse, requestPermission } = useAudioFiles();
+
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [currentSongIndex, setCurrentSongIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (permissionResponse?.status !== 'granted') {
       requestPermission();
     }
   }, [permissionResponse]);
-  
+
+  const toggleAudio = async (uri: string, index: number) => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+    }
+
+    await Audio.setAudioModeAsync({
+      staysActiveInBackground: true,
+      shouldDuckAndroid: true,
+      playThroughEarpieceAndroid: false,
+    });
+
+    const { sound: newSound } = await Audio.Sound.createAsync(
+      { uri },
+      { shouldPlay: true, positionMillis: 0 }
+    );
+
+    setSound(newSound);
+    setIsPlaying(true);
+    setCurrentSongIndex(index);
+  };
+
+  const handleStopResume = async () => {
+    if (!sound) return;
+    if (isPlaying) {
+      await sound.pauseAsync();
+    } else {
+      await sound.playAsync();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const playNext = () => {
+    if (currentSongIndex === null || currentSongIndex === audioFiles.length - 1) return;
+    const nextIndex = currentSongIndex + 1;
+    toggleAudio(audioFiles[nextIndex].uri, nextIndex);
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Songs</ThemedText>
-      </ThemedView>
-      {permissionResponse?.granted ? (
-        <AudioList audioFiles={audioFiles} />
-      ) : (
-        <ThemedText>Permission nécessaire pour accéder aux fichiers audio</ThemedText>
-      )}
-    </ParallaxScrollView>
+    <ThemedView style={styles.container}>
+      <View style={styles.body}>
+        <Header />
+        {permissionResponse?.granted ? (
+          <AudioList
+            audioFiles={audioFiles}
+            toggleAudio={toggleAudio}
+          />
+        ) : (
+          <ThemedText>Permission nécessaire pour accéder aux fichiers audio</ThemedText>
+        )}
+      </View>
+      
+      <AudioPlayerFooter
+        isPlaying={isPlaying}
+        currentSong={
+          currentSongIndex !== null ? audioFiles[currentSongIndex]?.filename : 'Aucune musique'
+        }
+        handleStopResume={handleStopResume}
+        playNext={playNext}
+      />
+    </ThemedView>
   );
 };
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  body: {
+    flex: 1,
+    padding: 20,
+    paddingTop: 50,
   },
 });
 
