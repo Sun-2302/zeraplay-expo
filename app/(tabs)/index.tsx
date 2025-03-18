@@ -4,12 +4,14 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Audio } from 'expo-av';
 import { useAudioFiles } from '../utils/useAudioFiles';
-import AudioList from './components/AudioList';
+
 import Header from './components/Header';
 import AudioPlayerFooter from './components/AudioPlayerFooter';
+import AudioList from './components/AudioList';
 
 
 const HomeScreen: React.FC = () => {
+
   const { audioFiles, permissionResponse, requestPermission } = useAudioFiles();
 
   const [sound, setSound] = useState<Audio.Sound | null>(null);
