@@ -1,8 +1,8 @@
-// useAudioFiles.ts
 import { useState, useEffect } from 'react';
+import * as MusicLibrary from 'expo-music-library';
 import * as MediaLibrary from 'expo-media-library';
+console.log("ExpoMusicLibrary:", MusicLibrary);
 
-// Hook personnalisé pour gérer les fichiers audio
 export const useAudioFiles = () => {
   const [audioFiles, setAudioFiles] = useState<any[]>([]);
   const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
@@ -16,19 +16,19 @@ export const useAudioFiles = () => {
   }, [permissionResponse]);
 
   const loadAudioFiles = async () => {
-    const media = await MediaLibrary.getAssetsAsync({
-      mediaType: MediaLibrary.MediaType.audio,
-      first: 10000,
-    });
+    try {
+      const { assets } = await MusicLibrary.getAssetsAsync({
+        first: 100, // Nombre de fichiers audio à récupérer
+        sortBy: ['default'], // Tri par défaut
+      });
 
-    const allowedExtensions = ['.mp3', '.m4a'];
+      // Filtrons uniquement les fichiers audio
+      const audioAssets = assets.filter(asset => asset.mediaType === 'audio');
 
-    // Filtrage des fichiers audio avec les extensions autorisées
-    const filteredAudio = media.assets.filter(asset =>
-      allowedExtensions.some(ext => asset.filename.endsWith(ext))
-    );
-
-    setAudioFiles(filteredAudio);
+      setAudioFiles(audioAssets);
+    } catch (error) {
+      console.error('Erreur lors du chargement des fichiers audio:', error);
+    }
   };
 
   return { audioFiles, permissionResponse, requestPermission };

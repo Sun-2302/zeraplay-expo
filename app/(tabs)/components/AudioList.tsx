@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { FlatList, TouchableOpacity, StyleSheet, View, Image } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
@@ -23,7 +23,17 @@ const AudioList: React.FC<AudioListProps> = ({ audioFiles, toggleAudio }) => {
               onPress={() => toggleAudio(item.uri, index)}
               style={styles.audioItem}
             >
-              <ThemedText>{item.filename}</ThemedText>
+              <Image
+                source={{ uri: item.artwork || require('../../../assets/images/Soundwave.jpeg') }}
+                style={styles.artwork}
+                resizeMode="cover"
+              />
+              <View>
+                <ThemedText style={styles.title}>{item.title || item.filename} {console.log(item.title)}</ThemedText>
+                <ThemedText style={styles.details}>
+                  {item.artist || 'Artiste inconnu'}
+                </ThemedText>
+              </View>
             </TouchableOpacity>
           )}
         />
@@ -38,8 +48,24 @@ const styles = StyleSheet.create({
     paddingBottom: 80,
   },
   audioItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 8,
     paddingLeft: 16,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  details: {
+    fontSize: 14,
+    color: 'gray',
+  },
+  artwork: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    marginRight: 12,
   },
 });
 

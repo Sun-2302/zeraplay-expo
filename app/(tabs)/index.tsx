@@ -75,15 +75,14 @@ const HomeScreen: React.FC = () => {
           <ThemedText>Permission nécessaire pour accéder aux fichiers audio</ThemedText>
         )}
       </View>
-      
+
       <AudioPlayerFooter
         isPlaying={isPlaying}
-        currentSong={
-          currentSongIndex !== null ? audioFiles[currentSongIndex]?.filename : 'Aucune musique'
-        }
+        currentSong={currentSongIndex !== null ? audioFiles[currentSongIndex] : null}
         handleStopResume={handleStopResume}
         playNext={playNext}
       />
+
     </ThemedView>
   );
 };
@@ -94,7 +93,6 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    padding: 20,
     paddingTop: 50,
   },
 });
