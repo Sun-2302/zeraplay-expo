@@ -20,9 +20,12 @@ export const useAudioFiles = () => {
       first: 10000,
     });
 
+    const allowedExtensions = ['.mp3', '.m4a'];
+
     const filteredAudio = media.assets.filter(asset =>
-      asset.filename.endsWith('.mp3') || asset.filename.endsWith('.m4a')
+      allowedExtensions.some(ext => asset.filename.endsWith(ext))
     );
+
 
     setAudioFiles(filteredAudio);
   };
