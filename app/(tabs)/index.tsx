@@ -10,11 +10,11 @@ const HomeScreen: React.FC = () => {
   const { audioFiles, permissionResponse, requestPermission } = useAudioFiles();
 
   useEffect(() => {
-    if (permissionResponse?.granted) {
+    if (permissionResponse?.status !== 'granted') {
       requestPermission();
     }
   }, [permissionResponse]);
-
+  
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -25,7 +25,7 @@ const HomeScreen: React.FC = () => {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Mes audios 🎵</ThemedText>
+        <ThemedText type="title">Songs</ThemedText>
       </ThemedView>
       {permissionResponse?.granted ? (
         <AudioList audioFiles={audioFiles} />
